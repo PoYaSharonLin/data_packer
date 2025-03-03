@@ -15,32 +15,27 @@ module ShortStringPacker
 
     # step1: alphabet to number
     num_array = str_array.map { |s| alphabet.index(s) + 1 }
-    # puts num_array
+    # print num_array
 
-    # step2: number to bits
-    bit_array = Array.new(num_array.length * Math.log(26, 2).ceil)
-    bit_array.length.times do |index|
-      num_array.each do | num |
-      msb = num & 1
-      num <<= 1
-      bit_array[index] = msb
-      end 
-    end
-    puts bit_array
-
-    # step3: bits to int 
-  #   result = bit_array.reduce(0) { |acc, bit| (acc << 1) | bit }
-  #   puts result
+    # step2: number to bit operation
+    max_bits = Math.log(26, 2).ceil
+    res = num_array.inject(0) { |acc, num| acc << max_bits | num }
+    # print res 
   end
 
-  ## Unpacks a Integer from pack() method into a short string
+  # Unpacks a Integer from pack() method into a short string
   # Arguments:
   #   packed - a Integer object
   # Returns: a String object
-  # def self.unpack(packed)
-  #   # IMPLEMENT THIS METHOD
-  # end
+  def self.unpack(packed)
+    # Unpack the integer back into the original string
+    str = []
+    while packed > 0
+      str.unshift(((packed & 31) + 'a'.ord - 1).chr) # Extract the last 5 bits and map to 'a'-'z'
+      packed >>= 5 # Right shift the packed integer
+    end
+    str.join
+  end
 end
 
-test1 = "abc"
-puts ShortStringPacker.pack(test1) 
+
